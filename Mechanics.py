@@ -3,6 +3,9 @@ from Player import *
 
 
 class GameScreenMechanics(Bot, Player):
+    """
+    All the game mechanics mashed up together. This class inherits after Bot, Player and GameScreenDisplay.
+    """
     def __init__(self, size, win_con):
         super().__init__(size, win_con)
 

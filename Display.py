@@ -15,43 +15,53 @@ GRAY = (204, 204, 204)
 BLUE =(0, 0, 255)
 
 # images
-angryRobot = pg.image.load('angry_robot.png')
-cross = pg.image.load('cross.png')
-circle = pg.image.load('circle.png')
+angryRobot = pg.image.load('images/angry_robot.png')
+cross = pg.image.load('images/cross.png')
+circle = pg.image.load('images/circle.png')
 
 pg.init()
 
-# the display handle and caption_text setting command
+# the display handle and text on the caption bar
 displayWindow = pg.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 pg.display.set_caption('Win or Die Deluxe')
 
 
 class EntryScreenDisplay:
-    board_size = 3
-    win_cond = 3
+    """
+    Representing the entry's screen display that user interacts with when the game is launched and when the single
+    game is ended.
+    """
+    board_size = 3 # default board size
+    win_cond = 3 # default winning condition that must ba achieved in order to win the game
 
-    def increment_board(self):
+    def increment_board(self) -> None:
+        """
+        In order to speed up the AI, the winning_con defaultly increment along with board_size.
+        """
         if self.board_size < 7:
             self.board_size += 1
             self.win_cond += 1
 
-    def increment_win(self):
+    def increment_win(self) -> None:
         if self.win_cond < 7 and self.win_cond < self.board_size:
             self.win_cond += 1
 
-    def decrement_board(self):
+    def decrement_board(self) -> None:
+        """
+        Because win_con can't be bigger than board_size, it decrements as well, when this situation occurs.
+        """
         if self.board_size > 3:
             self.board_size += -1
             if self.win_cond > self.board_size:
                 self.win_cond += -1
 
-    def decrement_win(self):
+    def decrement_win(self) -> None:
         if self.win_cond > 3:
             self.win_cond += -1
 
     def display_message(self, size: int, message: str, color: tuple, position: tuple) -> None:
         """
-        Display message of desired size and color at desired position
+        Display message of desired size and color at desired position.
 
         :param size : the size of message. The bigger size, the bigger text will be displayed
         :param message: content of message. String that will be displayed
@@ -84,12 +94,17 @@ class EntryScreenDisplay:
                 position[1] < mouse_pos[1] < (position[1] + height):
             if mouse_clicked[0] == 1 and desired_action is not None:
                 pg.time.delay(200)
-                if desired_action():
-                    return
+                if desired_action():  # this statement is only true when game has ended. It protects START button from
+                    return            # being printed out too early
         pg.draw.rect(displayWindow, rect_color, ((position[0] - (width / 2), position[1]), (width, height)))
         self.display_message(int(height / 2), message, mess_color, (position[0], position[1] + height / 2))
 
     def print_components(self, run_main):
+        """
+        Prints out the whole layout of start screen.
+
+        :param run_main: Function that starts the game
+        """
         displayWindow.fill(YELLOW)
         self.display_message(120, 'Tic-Tac-Toe', BLACK, (WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.06))
         self.display_message(60, 'Win or Die Deluxe Edition', RED, (WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.135))
@@ -109,22 +124,17 @@ class EntryScreenDisplay:
 
 class GameScreenDisplay:
     """
-    Presents the second screen of app where the actual game is taking place. User is able to get to this screen by
-    clicking the start button on the welcome screen.
-
-    Class is equipped in the following functionality:
-    - Printing the up-to-date components of game screen
-    - Calling the Player class to handle it's move
-    - Checking if the actual state of board is a winning one
+    Represents the second screen's display (game screen). Also, it holds all the needed size informations and actual
+    state of the board.
     """
     def __init__(self, size, win_condition):
         self.size = size
         self.win_condition = win_condition
-        self.box_size = WINDOW_WIDTH / (1.1 * self.size + 0.1)
-        self.gap_size = 0.1 * self.box_size
-        self.tags = [[None for x in range(self.size)] for y in range(self.size)]
-        self.cross = self.resize_tags(cross, True)
-        self.circle = self.resize_tags(circle, False)
+        self.box_size = WINDOW_WIDTH / (1.1 * self.size + 0.1)   # size of grid's box (box where tags are placed)
+        self.gap_size = 0.1 * self.box_size  # gap between grid boxes
+        self.tags = [[None for x in range(self.size)] for y in range(self.size)]  # main state of the board
+        self.cross = self.resize_tags(cross, True)  # resized image considering size of the board as a scale
+        self.circle = self.resize_tags(circle, False)  # -||-
 
     def resize_tags(self, image: pg.SurfaceType, is_cross: bool) -> pg.SurfaceType:
         """
