@@ -12,7 +12,7 @@ RED = (255, 0, 0)
 MIGHTY_BLUE = (79, 153, 209)
 OLIVE = (102, 102, 0)
 GRAY = (204, 204, 204)
-BLUE =(0, 0, 255)
+BLUE = (0, 0, 255)
 
 # images
 angryRobot = pg.image.load('images/angry_robot.png')

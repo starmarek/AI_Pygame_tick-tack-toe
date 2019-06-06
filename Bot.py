@@ -188,7 +188,7 @@ class Bot(GameScreenDisplay):
                 evaluation = self.minimax(depth - 1, alpha, beta, True)
                 self.tags[move[0]][move[1]] = None
                 min_eval = min(min_eval, evaluation)
-                alpha = min(beta, evaluation)
+                beta = min(beta, evaluation)
                 if beta <= alpha:
                     break
             return min_eval

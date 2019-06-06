@@ -63,7 +63,6 @@ class GameEngine:
                 self.entry_display.display_message(100, 'WAIT A SEC...', BLUE, (400, 400))
                 pg.display.update()
                 self.game_mechanics.move_bot()
-                self.game_mechanics.player_move_in_progress = True
             pg.display.update()
             self.game_mechanics.draw_components()
 
